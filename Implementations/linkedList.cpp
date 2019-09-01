@@ -83,6 +83,9 @@ class LinkedList{
         bool add(T data, int pos);
         void deleteFirst();
         void deleteLast();
+        bool change(int posA, int posB);
+        T set(T data, int pos);
+        T get(int pos);
     private:
         node<T> *head;
         int size;
@@ -190,6 +193,57 @@ void LinkedList<T>::deleteLast(){
         size--;
     }
 }
+
+template <class T>
+T LinkedList<T>::get(int pos){
+    if(!isEmpty()){
+        node<T> *curr = head;   
+        for(int i = 1; i < pos; i++){
+            curr = curr->getNext();
+        }
+        return curr->getData();
+    }
+}
+
+template <class T>
+T LinkedList<T>::set(T data, int pos){
+    if(!isEmpty()){
+        node<T> *curr = head;   
+        for(int i = 1; i < pos; i++){
+            curr = curr->getNext();
+        }
+        T retInfo = curr->getData();
+        curr->setData(data);
+        return retInfo;
+    }
+}
+
+//Exchanges the data in two linkedList positions, then, returns true if possible and false if otherwise
+template <class T>
+bool LinkedList<T>::change(int posA, int posB){
+    if(posA>size && posB>size){
+        return false;
+    } 
+
+    if(!isEmpty()){
+        node<T> *currA = head;   
+        node<T> *currB = head;
+        for(int i = 1; i < posA; i++){
+            currA = currA->getNext();
+        }
+
+        for(int i = 1; i < posB; i++){
+            currB = currB->getNext();
+        }
+
+        T tmpData = currA->getData();
+        currA->setData(currB->getData());
+        currB->setData(tmpData);
+
+    }
+    return true;
+}
+
 
 
 /*
