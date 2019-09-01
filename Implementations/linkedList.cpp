@@ -194,6 +194,7 @@ void LinkedList<T>::deleteLast(){
     }
 }
 
+//Gets the data of the given node position, and returns it.
 template <class T>
 T LinkedList<T>::get(int pos){
     if(!isEmpty()){
@@ -205,6 +206,7 @@ T LinkedList<T>::get(int pos){
     }
 }
 
+//Sets the value of the given node position with the given data, returns the data of the replaced node.
 template <class T>
 T LinkedList<T>::set(T data, int pos){
     if(!isEmpty()){
