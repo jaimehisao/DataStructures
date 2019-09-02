@@ -75,8 +75,8 @@ START OF LINKED LIST CLASS
 template <class T>
 class LinkedList{
     public:
-        LinkedList();
-        bool isEmpty();
+        LinkedList(); 
+        bool isEmpty(); 
         int getSize();
         void addFirst(T data);
         void addLast(T data);
@@ -247,7 +247,6 @@ bool LinkedList<T>::change(int posA, int posB){
 }
 
 
-
 /*
 END OF LINKED LIST CLASS
 */
@@ -255,11 +254,9 @@ END OF LINKED LIST CLASS
 
 
 /*
-MAIN
+MAIN Program Function -- To execute and test code from the above classes.
 */
 int main(){
-
-
 
     return 0;
 }
