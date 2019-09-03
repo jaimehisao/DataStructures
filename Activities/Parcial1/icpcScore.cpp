@@ -5,22 +5,25 @@
 
 using namespace std;
 
+//Create a struct that stores the Team's information, as is the name, accepted submisions and score, as well as the attempted problems.
 struct Teams{
         string name = "";
         int numberOfAccepted = 0, score = 0;
         int arr[10] = {0,0,0,0,0,0,0,0,0,0};
 };
 
-
+//Function that supplements the languange's sort funtion in order to sort the Teams.
 bool compare(Teams t2, Teams t1){
         return (t1.numberOfAccepted < t2.numberOfAccepted || (t1.numberOfAccepted == t2.numberOfAccepted && t1.score > t2.score));
 }
+
 
 int main(){
     int numberOfTeams, numberOfProblems;
     vector<Teams> teamVector;
     cin>>numberOfTeams>>numberOfProblems;
 
+    //Recieves Team Data
     for(int i = 0; i < numberOfTeams; i++){
         Teams tmpTeam;
         cin>>tmpTeam.name;
@@ -30,6 +33,7 @@ int main(){
     int numberOfSubmssionsSent;
     cin>>numberOfSubmssionsSent;
 
+    //Recieves submission data
     for(int i = 0; i < numberOfSubmssionsSent; i++){
         //Team name, Problem, Time and Accepted or Wrong (A, W)
         int time;
@@ -55,8 +59,10 @@ int main(){
 
     }
 
+    //Sorts the Vector by Submissions and Scores
     sort(teamVector.begin(), teamVector.end(), compare);
 
+    //Prints out in the required format.
     for(int i = 0; i < teamVector.size(); i++){
         cout<<i+1<<" "<<"-"<<" ";
         cout<<teamVector.at(i).name<<" "<<teamVector.at(i).numberOfAccepted<<" ";
