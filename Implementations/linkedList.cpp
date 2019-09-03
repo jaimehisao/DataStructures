@@ -83,12 +83,16 @@ class LinkedList{
         bool add(T data, int pos);
         void deleteFirst();
         void deleteLast();
+        void del(int pos);
+        int deleteAll();
         bool change(int posA, int posB);
         T set(T data, int pos);
         T get(int pos);
+        void print();
     private:
         node<T> *head;
         int size;
+        void deleteAllList();
 };
 
 //Starts a LinkedList with a NULL head and a size of 0
@@ -96,6 +100,21 @@ template <class T>
 LinkedList<T>::LinkedList(){
     head = nullptr;
     size = 0;
+}
+
+template <class T>
+LinkedList<T>::~LinkedList(){
+    deleteAllList();
+}
+
+template <class T>
+void LinkedList<T>::deleteAllList(){
+    node<T> *curr = head;
+    while(head != nullptr){
+        head = head->getNext();
+        delete curr;
+        curr = head;
+    }
 }
 
 //Returns true is the linked list is empty, false if otherwise
@@ -194,12 +213,38 @@ void LinkedList<T>::deleteLast(){
     }
 }
 
+//Deletes a node in the given position, this assumes that the position sent to it is already validated.
+template <class T>
+void LinkedList<T>::del(int pos){
+    if(pos == 0){
+        deleteFirst();
+    }else{
+       node<T> *curr = head;   
+        for(int i = 1; i < pos; i++){
+            curr = curr->getNext();
+        }
+        node<T> *aux = curr->getNext();
+        curr->setNext(aux->getNext());
+        delete aux;
+        size--;
+    }
+}
+
+//Delete All of the Nodes of the LinkedList, basically leave it as new.
+template <class T>
+int LinkedList<T>::deleteAll(){
+    deleteAllList();
+    int auxSize = size;
+    size = 0;
+    return auxSize;
+}
+
 //Gets the data of the given node position, and returns it.
 template <class T>
 T LinkedList<T>::get(int pos){
     if(!isEmpty()){
         node<T> *curr = head;   
-        for(int i = 1; i < pos; i++){
+        for(int i = 1; i <= pos; i++){
             curr = curr->getNext();
         }
         return curr->getData();
@@ -223,10 +268,35 @@ T LinkedList<T>::set(T data, int pos){
 //Exchanges the data in two linkedList positions, then, returns true if possible and false if otherwise
 template <class T>
 bool LinkedList<T>::change(int posA, int posB){
-    if(posA>size && posB>size){
+    //Teachers Implementation
+    if(posA < 0 || posB < 0 || posA >= size || posB >= size){
         return false;
     } 
 
+    if(posA == posB){
+        return true;
+    }
+
+    //Conditional operator, first part is the condition, second part is the TRUE : FALSE cases.
+    int posMen = (posA < posB ? posA : posB);
+    int posMay = (posA > posB ? posA : posB);
+
+    node<T> *curr1 = head;
+    for(int i = 1; i <= posMen; i++){
+        curr1 = curr1->getNext();
+    }
+    node<T> *curr2 = curr1;
+    for(int i = posMen; i<posMay; i++){
+        curr2 = curr2->getNext();
+    }
+
+    T dataAux = curr1->getData();
+    curr1->setData(curr2->getData());
+    curr2-setData(dataAux);
+    return true;
+
+    /*
+    //My Implementation
     if(!isEmpty()){
         node<T> *currA = head;   
         node<T> *currB = head;
@@ -244,7 +314,21 @@ bool LinkedList<T>::change(int posA, int posB){
 
     }
     return true;
+    */
 }
+
+//Displays the contents of the LinkedList, from start to finish.
+template <class T>
+void LinkedList<T>::print(){
+    node<T> *curr = head;
+    while(curr != nullptr){
+        cout<<curr->getData()<<endl;
+        curr = curr->getNext();
+    }
+}
+
+
+
 
 
 /*
