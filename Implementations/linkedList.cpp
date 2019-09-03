@@ -76,6 +76,7 @@ template <class T>
 class LinkedList{
     public:
         LinkedList(); 
+        ~LinkedList(); 
         bool isEmpty(); 
         int getSize();
         void addFirst(T data);
