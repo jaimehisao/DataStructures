@@ -76,6 +76,7 @@ template <class T>
 class LinkedList{
     public:
         LinkedList(); 
+        LinkedList(LinkedList &l);
         ~LinkedList(); 
         bool isEmpty(); 
         int getSize();
@@ -90,6 +91,11 @@ class LinkedList{
         T set(T data, int pos);
         T get(int pos);
         void print();
+        void reverse();
+        bool operator == (const LinkedList<T> &other);
+        void operator += (T data);
+        void operator += (const LinkedList<T> &l);
+        void operator = (const LinkedList<T> &l);
     private:
         node<T> *head;
         int size;
@@ -101,6 +107,12 @@ template <class T>
 LinkedList<T>::LinkedList(){
     head = nullptr;
     size = 0;
+}
+
+//Copies a LinkedList
+template <class T>
+LinkedList<T>::LinkedList(LinkedList &l){
+   
 }
 
 template <class T>
@@ -328,8 +340,72 @@ void LinkedList<T>::print(){
     }
 }
 
+//Reverses the contents of the LinkedList. Gets the First element, gets the address of the next element and moves on.
+template <class T>
+void LinkedList<T>::reverse() {
+    node<T> *curr1 = head;
+    node<T> *curr2 = curr1->getNext();
+    node<T> *prev = nullptr;
+    
+    while (head != nullptr){
+        head = curr1->getNext();
+        curr2 = curr1->getNext();
+        curr1->setNext(prev);
+        prev = curr1;
+        curr1 = head;
+    }
+    head = prev;
+}
 
+//*****************Operator Overloading****************
+//Returns true if two LinkedLists are equal to one another, contents, order and size.
+template <class T>
+bool LinkedList<T>::operator == (const LinkedList<T> &b){
+    node<T> *curr = this->head;
+    node<T> *currB = b.head;
 
+    if(this->size != b.size){
+        return false;
+    }
+
+    for(int i = 0; i < size; i++){
+        if(curr->getData() != currB->getData()){
+            return false;
+        }else{
+            curr->getNext();
+            currB->getNext();
+        }
+    }
+    return true;
+}
+
+//Adds a single piece of data to the end of a given LinkedList
+template <class T>
+void LinkedList<T>::operator += (T data){
+    this->addLast(data);
+}
+
+//Recieves a LinkedList and adds it to the end of the current LinkedList
+template <class T>
+void LinkedList<T>::operator += (const LinkedList<T> &l){
+    node<T> *curr = this->head;
+    while(curr != nullptr){
+        curr = curr->getNext();
+    }
+
+    node<T> *currB = l.head;
+    for(int i = 0; i < l.size; i++){
+        curr->setNext(currB->getData());
+        currB = currB->getNext();
+        curr = curr->getNext();
+    }
+}
+
+//Equals the current LinkedList to the given LinkedList (complete overwrite)
+template <class T>
+void LinkedList<T>::operator = (const LinkedList<T> &l){
+
+}
 
 
 /*
@@ -337,11 +413,17 @@ END OF LINKED LIST CLASS
 */
 
 
-
 /*
-MAIN Program Function -- To execute and test code from the above classes.
+MAIN Program Function -- To execute and test code from the above classes. So mostly this is for testing.
 */
 int main(){
+
+    LinkedList<string> miLista;
+    miLista.addFirst("Hola");
+    miLista.addLast("Crayola");
+    miLista.reverse();
+    miLista.print();
+    miLista.deleteAll();
 
     return 0;
 }
