@@ -3,4 +3,5 @@
 .DS_Store
 -Wno-atomic-implicit-seq-cst
 .out
+*.out
 .
