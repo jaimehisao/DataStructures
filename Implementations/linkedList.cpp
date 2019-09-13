@@ -120,13 +120,17 @@ LinkedList<T>::~LinkedList(){
     deleteAllList();
 }
 
+//Total LinkedList Destructor (not object destructor, but called by it)
 template <class T>
 void LinkedList<T>::deleteAllList(){
     node<T> *curr = head;
-    while(head != nullptr){
-        head = head->getNext();
+    while(curr != nullptr){
+        cout<<"mmmm";
         delete curr;
-        curr = head;
+        curr = curr->getNext();
+        head = curr;
+        //delete curr;
+        //curr = head; //???
     }
 }
 
@@ -357,7 +361,7 @@ void LinkedList<T>::reverse() {
     head = prev;
 }
 
-//*****************Operator Overloading****************
+//***************** Operator Overloading ****************
 //Returns true if two LinkedLists are equal to one another, contents, order and size.
 template <class T>
 bool LinkedList<T>::operator == (const LinkedList<T> &b){
@@ -401,10 +405,20 @@ void LinkedList<T>::operator += (const LinkedList<T> &l){
     }
 }
 
-//Equals the current LinkedList to the given LinkedList (complete overwrite)
+//Equals the current LinkedList to the given LinkedList (complete overwrite of the first LinkedList)
 template <class T>
 void LinkedList<T>::operator = (const LinkedList<T> &l){
-
+    cout<<"here firts";
+    this->deleteAll();
+    cout<<"here";
+    this->head = l.head;
+    node<T> *currL = l.head;
+    node<T> *currNew= this->head;
+    while(currL != nullptr){
+        currNew->setNext(currL);
+        currNew->getNext();
+        currL->getNext();
+    }
 }
 
 
@@ -417,13 +431,20 @@ END OF LINKED LIST CLASS
 MAIN Program Function -- To execute and test code from the above classes. So mostly this is for testing.
 */
 int main(){
+    LinkedList<string> lL;
+    
+
+    LinkedList<string> miOtra;
+    miOtra.addFirst("Hola2");
+    miOtra.addLast("Crayola2");
 
     LinkedList<string> miLista;
     miLista.addFirst("Hola");
     miLista.addLast("Crayola");
-    miLista.reverse();
-    miLista.print();
+    lL = miLista;
+    lL.print();
     miLista.deleteAll();
+    lL.deleteAll();
 
     return 0;
 }
