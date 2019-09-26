@@ -112,7 +112,13 @@ LinkedList<T>::LinkedList(){
 //Copies a LinkedList
 template <class T>
 LinkedList<T>::LinkedList(LinkedList &l){
-   
+    node<T> curr = head; 
+    node<T> currB = l.head;
+    while(currB != nullptr){
+        curr->setNext(currB->getData());
+        curr = curr->getNext();
+        currB = currB->getNext();
+   }
 }
 
 template <class T>
@@ -311,27 +317,6 @@ bool LinkedList<T>::change(int posA, int posB){
     curr1->setData(curr2->getData());
     curr2-setData(dataAux);
     return true;
-
-    /*
-    //My Implementation
-    if(!isEmpty()){
-        node<T> *currA = head;   
-        node<T> *currB = head;
-        for(int i = 1; i < posA; i++){
-            currA = currA->getNext();
-        }
-
-        for(int i = 1; i < posB; i++){
-            currB = currB->getNext();
-        }
-
-        T tmpData = currA->getData();
-        currA->setData(currB->getData());
-        currB->setData(tmpData);
-
-    }
-    return true;
-    */
 }
 
 //Displays the contents of the LinkedList, from start to finish.
@@ -376,14 +361,14 @@ bool LinkedList<T>::operator == (const LinkedList<T> &b){
         if(curr->getData() != currB->getData()){
             return false;
         }else{
-            curr->getNext();
-            currB->getNext();
+            curr = curr->getNext();
+            currB = currB->getNext();
         }
     }
     return true;
 }
 
-//Adds a single piece of data to the end of a given LinkedList
+//Adds a single node to the end of a given LinkedList. Calls the addLast, thus resulting in high inefficiency.
 template <class T>
 void LinkedList<T>::operator += (T data){
     this->addLast(data);
@@ -393,13 +378,15 @@ void LinkedList<T>::operator += (T data){
 template <class T>
 void LinkedList<T>::operator += (const LinkedList<T> &l){
     node<T> *curr = this->head;
+
     while(curr != nullptr){
         curr = curr->getNext();
     }
 
     node<T> *currB = l.head;
-    for(int i = 0; i < l.size; i++){
-        curr->setNext(currB->getData());
+    while(currB != nullptr){
+        node<T> *data = new node<T> (currB->getData());
+        curr->setNext(data);
         currB = currB->getNext();
         curr = curr->getNext();
     }
@@ -408,18 +395,17 @@ void LinkedList<T>::operator += (const LinkedList<T> &l){
 //Equals the current LinkedList to the given LinkedList (complete overwrite of the first LinkedList)
 template <class T>
 void LinkedList<T>::operator = (const LinkedList<T> &l){
-    cout<<"here firts";
     this->deleteAll();
-    cout<<"here";
     this->head = l.head;
     node<T> *currL = l.head;
     node<T> *currNew= this->head;
-    while(currL != nullptr){
+    while(currL != nullptr)
         currNew->setNext(currL);
-        currNew->getNext();
-        currL->getNext();
+        currNew->getNext(); 
+        node<T> * aux;
+        aux = currL->getNext();
     }
-}
+
 
 
 /*
@@ -428,22 +414,24 @@ END OF LINKED LIST CLASS
 
 
 /*
-MAIN Program Function -- To execute and test code from the above classes. So mostly this is for testing.
+MAIN Program Function -- To execute and test code from the above classes. So mostly this is for testing. Again, testing...
 */
 int main(){
     LinkedList<string> lL;
+    lL.addFirst("");
     
 
     LinkedList<string> miOtra;
-    miOtra.addFirst("Hola2");
-    miOtra.addLast("Crayola2");
+    miOtra.addFirst("Hola");
+    miOtra.addLast("Crayola");
 
     LinkedList<string> miLista;
     miLista.addFirst("Hola");
-    miLista.addLast("Crayola");
-    lL = miLista;
-    lL.print();
+    miLista.addLast("Crayola1");
+    miOtra += miLista;
+    miOtra.print();
     miLista.deleteAll();
+    miOtra.deleteAll();
     lL.deleteAll();
 
     return 0;
