@@ -9,13 +9,14 @@ using namespace std;
 
 //This function pushes to the Priority Queue, Queue, and Stack. The DS are passed by reference to the method.
 void pushTo(string toPass, priority_queue<int, std::vector<int>, std::greater<int> > &pq, queue<int> &q, stack<int> &s){
+    //Pushes the values to their corresponding data structures.
     pq.push(stoi(toPass));
     q.push(stoi(toPass));
     s.push(stoi(toPass));
 }
 
 void proccesOperand(string operand, priority_queue<int, std::vector<int>, std::greater<int> > &pq, queue<int> &q, stack<int> &s){
-
+    //Chooses the right operand and operation to do with the numbers in the Stack, Queue or PQueue
     if(operand == "+"){
         //Pushes to the Priority Queue
         int tmp = pq.top();
@@ -112,6 +113,7 @@ int main(){
     queue<int> tQueue;
     stack<int> tStack;
     getline(cin, data);
+    //While loop that workes until a # is found
     while (data != "#"){
 	    stringstream ss;
   	    ss << data;
