@@ -1,3 +1,8 @@
+/*
+BST.cpp - Class that implements a Binary Search Tree and its methods
+By: Jaime Hisao Yesaki Hinojosa A01720044
+Created: 25/9/19
+*/
 #import <iostream>
 #import <queue>
 using namespace std;
@@ -204,6 +209,7 @@ int BST::pred(NodeT *r){
     return curr->getData();
 }
 
+//Method that prints the leaves of a BST
 void BST::printLeaves(){
     //Empty Tree Case
     if(root == nullptr){
@@ -231,7 +237,7 @@ void BST::printLeaves(){
     //
 }
 
-//Method that returns the total number of nodes in a given BST
+//Method that returns the total number of nodes in a given BST - using a queue
 int BST::count(){
 
     if(root == nullptr){
