@@ -1,5 +1,5 @@
 /*
-BST.cpp - Class that implements a Binary Search Tree and its methods
+BST.cpp - Class that implements a Binary Search Tree and its methods. Also contains a few tests.
 By: Jaime Hisao Yesaki Hinojosa A01720044
 Created: 25/9/19
 */
@@ -60,6 +60,17 @@ void NodeT::setRight(NodeT* right){
 NODE CLASS ENDS
 */
 
+
+
+
+
+
+
+
+
+
+
+
 /*
 BST CLASS STARTS
 */
@@ -68,20 +79,22 @@ class BST{
     public:
         BST();
         ~BST();
-        BST(BST &b);
+        BST(const BST &b);
         bool search(int data);
         void add(int data);
         void remove(int data);
-        void print(int type);//1.-Prints in Preorder 2.-Prints in Inorder 3.-Prints in Postorder
+        void print(int type); //1.-Prints in Preorder 2.-Prints in Inorder 3.-Prints in Postorder
         void printLeaves();
         int count();
+        //Tarea 1 - BST
         int height();
         int whatLevelAmI(int data);
         vector<int> ancestors(int data);
-        int maxWidth();
+        //Tarea 2 - BST
+        int maxWidth(); //
         int nearestRelative(int d1, int d2);
         queue<int> toQueue();
-        bool operator ==(BST b2);
+        bool operator ==(BST &b2);
     private:
         NodeT *root;
         int howManyChildren(NodeT *r);
@@ -96,6 +109,10 @@ class BST{
         void printByLevel(NodeT *root);
         int individualHeight(NodeT* root);
         void copyHelper(NodeT* rootA);
+        bool equalHelper(NodeT* rootA, NodeT* rootB);
+        NodeT* nearestRelativeRecursive(NodeT* nRel, int a, int b);
+        void toQueueAssist(queue<int> &tQueue, NodeT* root);
+        //Helper Functions
 };
 
 /************************************************
@@ -113,9 +130,10 @@ BST::~BST(){
 }
 
 //Copy Constructor for a BST
-BST::BST(BST &b2){
+BST::BST(const BST &b2){
     //Traversing the BST using the Preorder method will allow us to copy the BST to another BST.
-    cout<<b2.root;
+    //NodeT* root = b2.root;
+    //cout<<b2.root;
     //copyHelper(b2.root);
 }
 
@@ -123,13 +141,37 @@ BST::BST(BST &b2){
 *          Operator Overloading for a BST       *
 *************************************************/
 
-bool BST::operator ==(BST b2){
-    return false;
+//Returns True or False depending if the two given BSTs are the same or not.
+bool BST::operator ==(BST &b2){
+    //Traversing the whole BST will allow us to know if they are exactly the same. We can use any method to traverse it, we'll use preorder for this one.
+    NodeT* rootA = b2.root;
+    NodeT* rootB = root;
+    return equalHelper(rootA, rootB);
 }
+
+/************************************************
+*     End of Operator Overloading for a BST     *
+*************************************************/
 
 /************************************************
 *          Private Methods for the BST          *
 *************************************************/
+
+//Function that helps the overloaded == operator determine if two trees are equal to each other.
+bool BST::equalHelper(NodeT* rootA, NodeT* rootB){
+    while(rootA != nullptr){
+        if(rootA->getData() != rootB->getData()){
+            return false;
+        }else{
+            if(equalHelper(rootA->getLeft(),rootB->getLeft()) && equalHelper(rootA->getRight(),rootB->getRight())){
+                return true;
+            }else{
+                return false;
+            }
+    }
+}
+    return true;
+}
 
 //Helper function for the Copy Constructor
 void BST::copyHelper(NodeT* rootA){
@@ -170,6 +212,8 @@ int BST::pred(NodeT *r){
 }
 
 //Various Types and Methods for Printing a BST, this are private and called from the print() function.
+
+//Prints the current node (father) and then accesses the children recursively.
 void BST::preorden(NodeT* root){
     if(root != nullptr){
         cout<<root->getData()<<" ";
@@ -178,6 +222,7 @@ void BST::preorden(NodeT* root){
     }
 }
 
+//Prints the left node and then goes up.
 void BST::inorden(NodeT* root){
     if(root != nullptr){
         inorden(root->getLeft());
@@ -186,6 +231,7 @@ void BST::inorden(NodeT* root){
     }
 }
 
+//Prints the right node and then goes up.
 void BST::postorden(NodeT* root){
     if(root != nullptr){
         postorden(root->getLeft());
@@ -194,6 +240,7 @@ void BST::postorden(NodeT* root){
     }
 }
 
+//Method that is called by printLeaves and prints the leaves of the tree, called recursively.
 void BST::printLeaves(NodeT* root){
     if(root != nullptr){
         if(root->getLeft() == nullptr && root->getRight() == nullptr){
@@ -205,6 +252,7 @@ void BST::printLeaves(NodeT* root){
     }
 }
 
+//Method that is called by count, traverses the tree using the preorder method and counts the amount of nodes.
 int BST::countPreorden(NodeT* root){
     if(root == nullptr){
         return 0;
@@ -212,6 +260,7 @@ int BST::countPreorden(NodeT* root){
     return 1 + countPreorden(root->getLeft()) + countPreorden(root->getRight());
 }
 
+//Method that prints the tree by level, using a queue. Called by print()
 void BST::printByLevel(NodeT* root){
     if(root == nullptr){
         return;
@@ -233,20 +282,18 @@ void BST::printByLevel(NodeT* root){
     }
 }
 
+//Assists the hight function in getting the height of a given BST
 int BST::individualHeight(NodeT* root){
-    int height = 0, h1 = 1,h2 = 1;
-    if(root != nullptr){
-        h1 = individualHeight(root->getLeft());
-        h2 = individualHeight(root->getRight());
-        if(h1>h2){
-        height+=h1;
-    }else{
-        height+=h2;
+    int hL, hR;
+    if(root == nullptr){
+        return 0;
     }
-    }
-return  height;
+    hL = individualHeight(root->getLeft());
+    hR = individualHeight(root->getRight());
+return  1+(left > right ? hL : hR);
 }
 
+//Method that destroys the tree recursively, frees up the memory used by it.
 void BST::destruye(NodeT* root){
     if(root != nullptr){
         destruye(root->getLeft());
@@ -255,8 +302,18 @@ void BST::destruye(NodeT* root){
     }
 }
 
+//Assists the toQueue method by being able to call itself recursively and traverse the tree...
+void BST::toQueueAssist(queue<int> &tQueue, NodeT* root){
+    while(root != nullptr){
+    toQueueAssist(tQueue, root->getRight());
+    tQueue.push(root->getData());
+    toQueueAssist(tQueue, root->getLeft());
+    return;
+    }
+}
+
 /************************************************
-*         END Public Methods for the BST        *
+*         END Private Methods for the BST       *
 *************************************************/
 
 
@@ -265,7 +322,7 @@ void BST::destruye(NodeT* root){
 *           Public Methods for the BST          *
 *************************************************/
 
-
+//Returns True if the data was found in the tree, False if otherwise
 bool BST::search(int data){
     NodeT *curr = root;
     while(curr != nullptr){
@@ -277,6 +334,7 @@ bool BST::search(int data){
     return false;
 }
 
+//Adds a piece of data into the tree.
 void BST::add(int data){
     NodeT *curr = root;
     NodeT *father = nullptr;
@@ -368,9 +426,7 @@ void BST::remove(int data){
     }
 }
 
-
-
-//Method that prints the leaves of a BST
+//Method that prints the leaves of a BST, uses a helper function which is private.
 void BST::printLeaves(){
     //Empty Tree Case
     if(root == nullptr){
@@ -396,43 +452,17 @@ void BST::printLeaves(){
     }
 }
 
-//Method that returns the total number of nodes in a given BST - using a queue
+//Method that returns the total number of nodes in a given BST, calls a helper function which is private.
 int BST::count(){
     return countPreorden(root);
-    /*
-    if(root == nullptr){
-        return 0;
-    }
-
-    queue<NodeT*> q;
-    int numOfNodes = 1;
-    q.push(root);
-
-    while(!q.empty()){
-        NodeT* tmp = q.front(); 
-        if(tmp->getLeft() != nullptr){
-            q.push(tmp->getLeft());
-            numOfNodes++;
-        }
-        if(tmp->getRight() != nullptr){
-            q.push(tmp->getRight());
-            numOfNodes++;
-        }
-        q.pop();
-    }
-    return numOfNodes;
-    */
 }
 
-
-//Returns the maximum height of the BST
+//Returns the maximum height of the BST, calls a helper function which is private.
 int BST::height(){
     return individualHeight(root);
 }
 
-
-
-//Returns a vector that contains the ancestors of the given node in the BST
+//Returns a vector that contains the ancestors of the given node in the BST, if the tree is empty, returns an empty vector.
 vector<int> BST::ancestors(int data){
     vector<int> theAncestors; 
     bool exists = false;
@@ -450,11 +480,11 @@ vector<int> BST::ancestors(int data){
             curr = curr->getRight();
         }
     }
-
     vector<int> ret;
     return ret;
 }
 
+//Returns the level where a given piece of data is inside the BST.
 int BST::whatLevelAmI(int data){
     int level = 0;
     NodeT *curr = root;
@@ -473,7 +503,7 @@ int BST::whatLevelAmI(int data){
     return -1;
 }
 
-
+//Function that recieves a print type and prints the BST acordingly.
 void BST::print(int type){
     switch(type){
         case 1: preorden(root);
@@ -485,25 +515,53 @@ void BST::print(int type){
         case 4: printLeaves(root);
                 break;
         case 5: printByLevel(root);
+                break;
     }
     cout<<endl;
 }
 
+//!Work in progress - Returns the max with of a given tree (basically level with max number of nodes)
 int BST::maxWidth(){
     int mWidth = 0;
 
     return mWidth;
 }
 
-int BST::nearestRelative(int d1, int d2){
-    int theRelative = 0;
-    return theRelative;
+//!Work in progress - Returns the nearest relative of two nodes in the BST. ()
+int BST::nearestRelative(int n1, int n2){
+    if(root == nullptr || search(n1) || search(n2)){
+        return -1;
+    }
+ 
+    return nearestRelativeRecursive(root, n1, n2)->getData();
 }
 
+//Helper Method to find the nearest relative - called recursively from nearestRelative
+NodeT* BST::nearestRelativeRecursive(NodeT* root, int a, int b){
+
+    if(root == nullptr){
+        return nullptr;
+    }
+
+    if(root->getData() > max(a,b)){
+        return nearestRelativeRecursive(root->getLeft(), a, b);
+    }
+
+    if(root->getData() < max(a,b)){
+        return nearestRelativeRecursive(root->getRight(), a, b);
+    }
+
+    //return root; 
+}
+
+//Funtion that moves the entire BST to a Queue in decending order.
 queue<int> BST::toQueue(){
     queue<int> q;
+    toQueueAssist(q, root);
     return q;
 }
+
+
 
 /*
 BST CLASS ENDS
@@ -560,7 +618,8 @@ int main(){
     cout<<"Cantidad de Datos..."<<tree.count()<<endl;
     cout<<tree.whatLevelAmI(69)<<endl;
 
-    vector<int> theAncestors = tree.ancestors(69);
+    cout<<"Tha ancestors are..."<<endl;
+    vector<int> theAncestors = tree.ancestors(9);
     for(int i = 0; i < theAncestors.size(); i++){
         cout<<theAncestors.at(i)<<" ";
     }
@@ -571,9 +630,41 @@ int main(){
     cout<<"Tree height: "<<tree.height()<<endl;
     //tree.~BST(); 
 
-    cout<<"Copying Tree to New BST"<<endl;
-    BST tree2(tree);
-    tree2.print(4);
+    //cout<<"Copying Tree to New BST"<<endl;
+    //BST tree2(tree);
+    //tree2.print(4);
+
+    BST tree3;
+    tree3.add(20);
+    tree3.add(50);
+    tree3.add(44);
+    tree3.add(10);
+    tree3.add(15);
+    tree3.add(9);
+    tree3.add(5);
+    tree3.add(100);
+    tree3.add(59);
+    tree3.add(8);
+
+    cout<<"Checking if two trees are the same..."<<endl;
+    if(tree==tree3){
+        cout<<"The Trees are the same"<<endl;
+    }else{
+        cout<<"The Trees are not the same"<<endl;
+    }
+
+    cout<<"Nearest Relatives between two nodes..."<<endl;
+    cout<<tree.nearestRelative(10, 50)<<endl;
+    
+
+    cout<<"Tree in a queue..."<<endl;
+    queue<int> q = tree.toQueue();
+    while(!q.empty()){
+        cout<<q.front()<<" ";
+        q.pop();
+    }
+
+
 
     return 0;
 }
