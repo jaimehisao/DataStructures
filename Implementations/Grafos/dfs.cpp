@@ -31,7 +31,9 @@ void printListaAdj(vector<vector<int> > &listaAdj){
 
 void DFS(vector<vector<int> > &listaAdj){
     stack<int> pila;
-    pila.push(0);
+    int arranque;
+    cin>>arranque;
+    pila.push(arranque-1);
     int dato;
     vector<bool> status(listaAdj.size(), false);
     int cantVisitados = 0;
