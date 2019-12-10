@@ -108,7 +108,7 @@ class BST{
         int countPreorden(NodeT *root);
         void printByLevel(NodeT *root);
         int individualHeight(NodeT* root);
-        void copyHelper(NodeT* rootA);
+        void copyHelper(NodeT* copyFrom);
         bool equalHelper(NodeT* rootA, NodeT* rootB);
         NodeT* nearestRelativeRecursive(NodeT* nRel, int a, int b);
         void toQueueAssist(queue<int> &tQueue, NodeT* root);
@@ -132,9 +132,8 @@ BST::~BST(){
 //Copy Constructor for a BST
 BST::BST(const BST &b2){
     //Traversing the BST using the Preorder method will allow us to copy the BST to another BST.
-    //NodeT* root = b2.root;
-    //cout<<b2.root;
-    //copyHelper(b2.root);
+    root = nullptr;
+    copyHelper(b2.root);
 }
 
 /************************************************
@@ -174,13 +173,14 @@ bool BST::equalHelper(NodeT* rootA, NodeT* rootB){
 }
 
 //Helper function for the Copy Constructor
-void BST::copyHelper(NodeT* rootA){
-    if(rootA != nullptr){
-        this->add(rootA->getData());
-        copyHelper(rootA->getLeft());
-        copyHelper(rootA->getRight());
+void BST::copyHelper(NodeT* nodeFrom){
+    if(nodeFrom != nullptr){
+        add(nodeFrom->getData());
+        copyHelper(nodeFrom->getLeft());
+        copyHelper(nodeFrom->getRight());
     }
 }
+
 //Returns how many children does a given node have.
 int BST::howManyChildren(NodeT *r){
     int cont = 0;
@@ -520,41 +520,58 @@ void BST::print(int type){
     cout<<endl;
 }
 
-//!Work in progress - Returns the max with of a given tree (basically level with max number of nodes)
+//Returns the max with of a given tree (basically level with max number of nodes)
 int BST::maxWidth(){
     int mWidth = 0;
+    queue<NodeT*> treeQueue;
+    treeQueue.push(root);
+
+    while(!treeQueue.empty()){
+        NodeT* tmp = treeQueue.front();
+
+        if(tmp->getLeft() != nullptr){
+            treeQueue.push(tmp->getLeft());
+        }
+
+        if(tmp->getRight() != nullptr){
+            treeQueue.push(tmp->getRight());
+        }
+
+        treeQueue.pop();
+        if(treeQueue.size() > mWidth){
+            mWidth = treeQueue.size();
+        }
+    }
 
     return mWidth;
 }
 
-//!Work in progress - Returns the nearest relative of two nodes in the BST. ()
-int BST::nearestRelative(int n1, int n2){
-    if(root == nullptr || search(n1) || search(n2)){
-        return -1;
-    }
- 
-    return nearestRelativeRecursive(root, n1, n2)->getData();
-}
+//Returns the nearest relative of two nodes in the BST.
+int BST::nearestRelative(int n1, int n2){   
+    vector<int> v1 = this->ancestors(n1);
+    vector<int> v2 = this->ancestors(n2);
+    reverse(v1.begin(), v1.end());
+    reverse(v2.begin(), v2.end());
+    cout<<v1.size()<<v2.size()<<endl;
 
-//Helper Method to find the nearest relative - called recursively from nearestRelative
-NodeT* BST::nearestRelativeRecursive(NodeT* root, int a, int b){
+    int size = (v1.size() < v2.size() ? v1.size() : v2.size());
+    cout<<size<<endl;
 
-    if(root == nullptr){
-        return nullptr;
-    }
-
-    if(root->getData() > max(a,b)){
-        return nearestRelativeRecursive(root->getLeft(), a, b);
+    if(v1.size() == 1 || v2.size() == 1){
+        return v1.at(0);
     }
 
-    if(root->getData() < max(a,b)){
-        return nearestRelativeRecursive(root->getRight(), a, b);
+    for(int i = 0; i < size; i++){
+        cout<<v1.at(i)<<" "<<v2.at(i)<<endl;
+        if(v1.at(i) != v2.at(i)){
+            return v1.at(i-1);
+        }
     }
 
-    //return root; 
-}
+    return -1;
+} 
 
-//Funtion that moves the entire BST to a Queue in decending order.
+//Funtion that moves the entire BST to a Queue in decending order. Calls a helper function that is called recursively.
 queue<int> BST::toQueue(){
     queue<int> q;
     toQueueAssist(q, root);
@@ -619,7 +636,7 @@ int main(){
     cout<<tree.whatLevelAmI(69)<<endl;
 
     cout<<"Tha ancestors are..."<<endl;
-    vector<int> theAncestors = tree.ancestors(9);
+    vector<int> theAncestors = tree.ancestors(10);
     for(int i = 0; i < theAncestors.size(); i++){
         cout<<theAncestors.at(i)<<" ";
     }
@@ -653,8 +670,8 @@ int main(){
         cout<<"The Trees are not the same"<<endl;
     }
 
-    cout<<"Nearest Relatives between two nodes..."<<endl;
-    cout<<tree.nearestRelative(10, 50)<<endl;
+    cout<<"Nearest Relatives between two nodes..."<<" ";
+    cout<<tree.nearestRelative(60, 100)<<endl;
     
 
     cout<<"Tree in a queue..."<<endl;
@@ -663,6 +680,8 @@ int main(){
         cout<<q.front()<<" ";
         q.pop();
     }
+
+    cout<<"Maximum Width of a Tree "<<tree.maxWidth()<<endl;
 
 
 
